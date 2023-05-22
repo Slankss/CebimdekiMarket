@@ -54,7 +54,7 @@ class ProductViewModel(val context : Context) : ViewModel() {
                     val currentTime = LocalDateTime.now()
                     var minute = dateTime.until(currentTime,ChronoUnit.MINUTES)
 
-                    if(minute < 1){
+                    if(minute < 15){
                         getProductsFromRoom()
                     }
                     else{

@@ -60,8 +60,14 @@ class MainActivity : AppCompatActivity() {
             bottomFragment.show(supportFragmentManager,"TAG")
         }
 
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getProductsFromInternet()
+            binding.refreshLayout.isRefreshing = false
+        }
+
 
     }
+
 
 
 
