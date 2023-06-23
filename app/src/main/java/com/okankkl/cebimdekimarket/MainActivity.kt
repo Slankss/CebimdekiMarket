@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         adapter.addCardClick = { product,quality ->
             cardViewModel.addCard(product,quality)
-            Toast.makeText(applicationContext,"Sepete başarıyla eklendi",Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,"Sepete başarıyla eklendi.",Toast.LENGTH_SHORT).show()
 
         }
 
