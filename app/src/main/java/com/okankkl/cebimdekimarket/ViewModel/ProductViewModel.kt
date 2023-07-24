@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.okankkl.cebimdekimarket.Dao.ProductDao
 import com.okankkl.cebimdekimarket.Dao.ProductRetrofitDao
 import com.okankkl.cebimdekimarket.Db.AppDatabase
+import com.okankkl.cebimdekimarket.Db.AppModule
 import com.okankkl.cebimdekimarket.Model.MyCard
 import com.okankkl.cebimdekimarket.Model.Product
 import com.okankkl.cebimdekimarket.Model.Sorted
@@ -33,6 +34,7 @@ class ProductViewModel(val context : Context) : ViewModel() {
     val editor = sharedPref.edit()
 
     init {
+        
         viewModelScope.launch {
             var dao = AppDatabase.getDatabase(context).productDao()
             repository = ProductRepository(dao)
@@ -71,30 +73,19 @@ class ProductViewModel(val context : Context) : ViewModel() {
         val currentTime = LocalDateTime.now()
 
         viewModelScope.launch {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-            val service = retrofit.create(ProductRetrofitDao::class.java)
-
-            CoroutineScope(Dispatchers.IO).launch {
-
-                val response = service.getProducts()
-
-                withContext(Dispatchers.Main){
-                    if(response.isSuccessful){
-                        response.body()?.let { list ->
-                            productList.postValue(list)
-                            repository.insertProducts(list)
-                        }
-                        editor.putString("updatedDate",currentTime.toString())
-                        editor.commit()
-                    }
+            
+            val response = AppModule.injectRetrofit().getProducts()
+            
+            if(response.isSuccessful){
+                response.body()?.let { list ->
+                    productList.postValue(list)
+                    repository.insertProducts(list)
                 }
-
-
+                editor.putString("updatedDate",currentTime.toString())
+                editor.commit()
             }
+            
+           
             Toast.makeText(context,"GET FROM THE INTERNET",Toast.LENGTH_SHORT).show()
         }
     }
